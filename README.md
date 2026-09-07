@@ -14,4 +14,9 @@ The first version will analyze closed service requests from the most recent 12 m
 San Francisco 311 Cases:
 https://data.sf.gov/d/vw6y-z8j6
 ## Status
-Week 1: Setting up the Github repository
+Week 1 repository setup is complete
+Current structure:
+
+-Python entry point created
+-Dependencies recorded
+-Data-analysis questions defined
