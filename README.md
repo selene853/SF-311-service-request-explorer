@@ -20,3 +20,13 @@ Current structure:
 -Python entry point created
 -Dependencies recorded
 -Data-analysis questions defined
+Week 2  Data loading and Cleaning
+-Connected the project to San Francisco 311 Socrata API
+-Stored the application token in an environment variable instead of source code
+-Retrievd a sample of most recent 311 requests
+-Selected nine relevant columns for analysis
+-Converted request and closure dates to datetime values
+-Created a resolution-time column for closed requests
+-Preserved open requests with missing closure times
+-Removed invalid records, including negative resolution times
+-Confirmed that the cleaned dataset loads successfully
