@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Project-specific ignored files
+.DS_Store
+.env
+data/raw/
+data/processed/
