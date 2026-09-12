@@ -2,7 +2,7 @@
 import os
 import pandas as pd
 import requests
-
+from datetime import datetime, timedelta, timezone
 
 API_URL = "https://data.sf.gov/api/v3/views/vw6y-z8j6/query.json"
 
@@ -19,8 +19,12 @@ COLUMNS = [
 ]
 
 
+sampling_delay_days = 30
 
-def load_sample(limit=1000):
+cutoff = (
+    datetime.now(timezone.utc) - timedelta(days=sampling_delay_days)
+).strftime("%Y-%m-%dT%H:%M:%S")
+def load_sample(limit=1000, before_date=None):
     token = os.environ.get("SOCRATA_APP_TOKEN")
 
     if token is None:
@@ -28,10 +32,19 @@ def load_sample(limit=1000):
             "SOCRATA_APP_TOKEN has not been set in the terminal."
         )
 
+
+    
+
+    if before_date is not None:
+      where_clause = (
+        f"WHERE requested_datetime < '{before_date}'"
+    )
+
     query = f"""
-        SELECT {", ".join(COLUMNS)}
-        ORDER BY requested_datetime DESC
-    """
+    SELECT {", ".join(COLUMNS)}
+    WHERE requested_datetime < '{cutoff}'
+    ORDER BY requested_datetime DESC
+"""
 
     response = requests.post(
         API_URL,

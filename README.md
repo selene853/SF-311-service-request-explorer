@@ -20,13 +20,30 @@ Current structure:
 -Python entry point created
 -Dependencies recorded
 -Data-analysis questions defined
-Week 2  Data loading and Cleaning
--Connected the project to San Francisco 311 Socrata API
--Stored the application token in an environment variable instead of source code
--Retrievd a sample of most recent 311 requests
--Selected nine relevant columns for analysis
--Converted request and closure dates to datetime values
--Created a resolution-time column for closed requests
--Preserved open requests with missing closure times
--Removed invalid records, including negative resolution times
--Confirmed that the cleaned dataset loads successfully
+### Week 2 — Data Loading and Cleaning
+
+**Status:**  Completed
+
+This week, I loaded the data from SF 311 Cases dataset from Data SF  .
+
+The cleaning function converted the requested and closed date to datetime type and cleaned, then created a new column'resolution_hours', then removed the rows where resolution hours<0.
+
+I encountered a 403 Forbidden error when requesting data through the outdated
+DataSF API hostname, which I resolved by changing the endpoint to the current
+`data.sf.gov` SODA3 endpoint and providing a Socrata app token through an
+environment variable.
+
+Before beginning the next stage, I still need to verify the cleaned output and
+commit and push my Week 2 changes to GitHub. 
+
+Before beginning the next stage, I still need to verify cleaned output  .
+### Sampling strategy
+
+A historical pilot cohort was used to estimate the percentage of cases resolved
+within different periods. Approximately 89.5% were resolved within 30 days,
+compared with 92.1% within 60 days.
+
+The project therefore uses a 30-day sampling delay. This provides approximately
+90% resolution coverage while keeping the analyzed data reasonably current.
+Cases still unresolved after 30 days are retained for status analysis but
+excluded from calculations requiring a completed resolution time.
