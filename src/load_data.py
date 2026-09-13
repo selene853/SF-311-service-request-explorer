@@ -33,7 +33,7 @@ def load_sample(limit=1000, before_date=None):
         )
 
 
-    
+    where_clause=''
 
     if before_date is not None:
       where_clause = (
@@ -41,10 +41,10 @@ def load_sample(limit=1000, before_date=None):
     )
 
     query = f"""
-    SELECT {", ".join(COLUMNS)}
-    WHERE requested_datetime < '{cutoff}'
-    ORDER BY requested_datetime DESC
-"""
+        SELECT {", ".join(COLUMNS)}
+        {where_clause}
+        ORDER BY requested_datetime DESC
+    """
 
     response = requests.post(
         API_URL,

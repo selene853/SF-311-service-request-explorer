@@ -47,3 +47,13 @@ The project therefore uses a 30-day sampling delay. This provides approximately
 90% resolution coverage while keeping the analyzed data reasonably current.
 Cases still unresolved after 30 days are retained for status analysis but
 excluded from calculations requiring a completed resolution time.
+### Effect of the sampling strategy
+
+The newest-request sample and the 30-day delayed sample produced substantially
+different results. The newest sample contained more open requests, so its
+resolution-time statistics disproportionately represented cases that were
+resolved quickly.
+
+The delayed sample contained more completed requests and was therefore used for
+the main resolution-time analysis. However, some differences may also result
+from changes in service categories or operating conditions over time.

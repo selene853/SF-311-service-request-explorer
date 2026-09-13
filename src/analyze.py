@@ -1,4 +1,6 @@
+import pandas as pd
 from load_data import load_sample, prepare_data
+from datetime import datetime, timedelta, timezone
 def evaluate_resolution_window(df):
     print("\nHistorical cohort status:")
     print(df["status_description"].value_counts(dropna=False))
@@ -73,17 +75,47 @@ def summarize_data(df):
     .head(10)
 )
 
+def cohort_metrics(df):
+    closed_count = df["resolution_hours"].notna().sum()
 
+    return {
+        "total_cases": len(df),
+        "closed_cases": closed_count,
+        "closed_percentage": closed_count / len(df) * 100,
+        "median_resolution_hours": df["resolution_hours"].median(),
+        "mean_resolution_hours": df["resolution_hours"].mean(),
+    }
 def main():
-    historical_requests = load_sample(
-        limit=1000,
-        before_date="2026-07-01T00:00:00"
+    cutoff = (
+        datetime.now(timezone.utc) - timedelta(days=30)
+    ).strftime("%Y-%m-%dT%H:%M:%S")
+
+    recent_df = prepare_data(
+        load_sample(limit=1000, before_date=None)
     )
 
-    historical_df = prepare_data(historical_requests)
-    evaluate_resolution_window(historical_df)
+    delayed_df = prepare_data(
+        load_sample(limit=1000, before_date=cutoff)
+    )
+
+    comparison = pd.DataFrame(
+        {
+            "Newest 1,000 requests": cohort_metrics(recent_df),
+            "30-day delayed sample": cohort_metrics(delayed_df),
+        }
+    ).T.round(1)
+
+    print("\nSampling comparison:")
+    print(comparison.to_string())
+
+    # Use the delayed sample for the main analysis
+    summarize_data(delayed_df)
+
+
 
 
 if __name__ == "__main__":
     main()
+
+
      
