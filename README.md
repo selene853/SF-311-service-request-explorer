@@ -57,3 +57,29 @@ resolved quickly.
 The delayed sample contained more completed requests and was therefore used for
 the main resolution-time analysis. However, some differences may also result
 from changes in service categories or operating conditions over time.
+### Week 3 — Exploratory Analysis and Visualization
+
+**Status:** completed
+
+This week, I analyzed a 1,000-request sample submitted at least 30 days earlier. Using a delayed sample reduced the bias caused by recently submitted requests that have not yet had enough time to close.
+
+The analysis examined:
+
+- The most common service categories
+- The neighborhoods with the most requests
+- Median and mean resolution times by service category
+- Differences between the newest sample and the 30-day delayed sample
+
+For service-category resolution comparisons, I included only categories with at least 10 closed requests. This prevents categories with very small sample sizes from dominating the rankings.
+
+#### Most Common Service Categories
+
+![Most common service categories](output/top_service_categories.png)
+
+#### Requests by Neighborhood
+
+![Requests by neighborhood](output/requests_by_neighborhood.png)
+
+#### Median Resolution Time by Service Category
+
+![Median resolution time](output/median_resolution_by_service.png)

@@ -1,6 +1,57 @@
 import pandas as pd
 from load_data import load_sample, prepare_data
 from datetime import datetime, timedelta, timezone
+MIN_CLOSED_CASES = 10
+
+
+def service_resolution_summary(df):
+    closed = df.dropna(subset=["resolution_hours"])
+
+    summary = (
+        closed.groupby("service_name")["resolution_hours"]
+        .agg(["median", "mean", "count"])
+    )
+
+    return summary[summary["count"] >= MIN_CLOSED_CASES]
+def compare_top_10_services(recent_df, delayed_df):
+    recent_top = (
+        service_resolution_summary(recent_df)
+        .nlargest(10, "median")
+        .reset_index()
+        [["service_name", "median", "count"]]
+        .rename(
+            columns={
+                "service_name": "recent_category_service",
+                "median": "recent_median_hours",
+                "count": "recent_closed_cases",
+            }
+        )
+    )
+
+    delayed_top = (
+        service_resolution_summary(delayed_df)
+        .nlargest(10, "median")
+        .reset_index()
+        [["service_name", "median", "count"]]
+        .rename(
+            columns={
+                "service_name": "delayed_service",
+                "median": "delayed_median_hours",
+                "count": "delayed_closed_cases",
+            }
+        )
+    )
+
+    recent_top.index = range(1, len(recent_top) + 1)
+    delayed_top.index = range(1, len(delayed_top) + 1)
+
+    comparison = pd.concat(
+        [recent_top, delayed_top],
+        axis=1,
+    )
+
+    comparison.index.name = "rank"
+    return comparison
 def evaluate_resolution_window(df):
     print("\nHistorical cohort status:")
     print(df["status_description"].value_counts(dropna=False))
@@ -55,36 +106,36 @@ def summarize_data(df):
     print('\nTen most common neighborhoods:')
     print(df['neighborhoods_sffind_boundaries'].value_counts().head(10))
 
-    closed=df.dropna(subset=['resolution_hours'])
+    
+    service_summary = service_resolution_summary(df)
 
     print("\nMedian resolution hours by service category:")
-
     print(
-    closed.groupby("service_name")["resolution_hours"]
-    .median()
+    service_summary["median"]
     .sort_values(ascending=False)
     .head(10)
 )
 
     print("\nMean resolution hours by service category:")
-
     print(
-    closed.groupby("service_name")["resolution_hours"]
-    .mean()
+     service_summary["mean"]
     .sort_values(ascending=False)
     .head(10)
 )
 
 def cohort_metrics(df):
     closed_count = df["resolution_hours"].notna().sum()
-
+    
+    
     return {
         "total_cases": len(df),
         "closed_cases": closed_count,
         "closed_percentage": closed_count / len(df) * 100,
         "median_resolution_hours": df["resolution_hours"].median(),
         "mean_resolution_hours": df["resolution_hours"].mean(),
+        
     }
+    
 def main():
     cutoff = (
         datetime.now(timezone.utc) - timedelta(days=30)
@@ -104,7 +155,13 @@ def main():
             "30-day delayed sample": cohort_metrics(delayed_df),
         }
     ).T.round(1)
+    top_10_comparison = compare_top_10_services(
+    recent_df,
+     delayed_df,
+     )
 
+    print("\nTop 10 service-category comparison:")
+    print(top_10_comparison.round(1).to_string())
     print("\nSampling comparison:")
     print(comparison.to_string())
 
@@ -115,6 +172,7 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
 
 
