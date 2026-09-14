@@ -83,3 +83,12 @@ For service-category resolution comparisons, I included only categories with at 
 #### Median Resolution Time by Service Category
 
 ![Median resolution time](output/median_resolution_by_service.png)
+#### Request Volume Over Time
+
+![Daily SF 311 request volume](output/request_volume_over_time.png)
+
+This visualization shows the daily number of SF 311 requests during the previous 90 complete days. The current day is excluded because its request count is incomplete.
+
+### Data Freshness
+
+The project retrieves data from the live SF Open Data API. Therefore, summaries and visualizations may change when the program is run at a different time. The analysis method remains consistent even as new requests are submitted and existing requests are closed.
