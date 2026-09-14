@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-
+from load_data import (
+    load_sample,
+    prepare_data,
+    load_daily_request_counts,
+)
 import matplotlib.pyplot as plt
 
 from load_data import load_sample, prepare_data
@@ -83,6 +87,34 @@ def plot_requests_by_neighborhood(df):
         bbox_inches="tight",
     )
     plt.close()
+def plot_request_volume_over_time(daily_counts):
+    plt.figure(figsize=(12, 6))
+
+    plt.plot(
+        daily_counts["request_date"],
+        daily_counts["request_count"],
+        color="royalblue",
+        linewidth=2,
+    )
+
+    plt.title("Daily Volume of SF 311 Service Requests")
+    plt.xlabel("Request Date")
+    plt.ylabel("Number of Requests")
+    plt.grid(alpha=0.3)
+    plt.xticks(rotation=45)
+    plt.xlim(
+    daily_counts["request_date"].min(),
+    daily_counts["request_date"].max(),
+)
+    plt.tight_layout()
+
+    Path("output").mkdir(exist_ok=True)
+    plt.savefig(
+        "output/request_volume_over_time.png",
+        dpi=300,
+        bbox_inches="tight",
+    )
+    plt.close()
 def main():
     cutoff = (
     datetime.now(timezone.utc) - timedelta(days=30)
@@ -97,7 +129,10 @@ def main():
     plot_resolution_by_service(df)
 
     print("Saved output/top_service_categories.png")
-
+    daily_counts = load_daily_request_counts(days=90)
+    plot_request_volume_over_time(daily_counts)
+    print("Saved output/request_volume_over_time.png")
+    
 
 if __name__ == "__main__":
     main()

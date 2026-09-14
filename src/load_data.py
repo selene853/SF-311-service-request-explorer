@@ -63,7 +63,66 @@ def load_sample(limit=1000, before_date=None):
 
     response.raise_for_status()
     return pd.DataFrame(response.json())
+def load_daily_request_counts(days=90):
+    token = os.environ.get("SOCRATA_APP_TOKEN")
 
+    if token is None:
+        raise RuntimeError(
+            "SOCRATA_APP_TOKEN has not been set in the terminal."
+        )
+
+    # Use complete days only; exclude today because it is unfinished
+    end_date = datetime.now(timezone.utc).date()
+    start_date = end_date - timedelta(days=days)
+
+    start = f"{start_date}T00:00:00"
+    end = f"{end_date}T00:00:00"
+
+    query = f"""
+        SELECT
+            date_trunc_ymd(requested_datetime) AS request_date,
+            count(*) AS request_count
+        WHERE requested_datetime >= '{start}'
+          AND requested_datetime < '{end}'
+        GROUP BY request_date
+        ORDER BY request_date
+    """
+
+    response = requests.post(
+        API_URL,
+        headers={"X-App-Token": token},
+        json={
+            "query": query,
+            "page": {
+                "pageNumber": 1,
+                "pageSize": days + 1,
+            },
+            "includeSynthetic": False,
+        },
+        timeout=30,
+    )
+
+    response.raise_for_status()
+
+    daily_counts = pd.DataFrame(response.json())
+
+    daily_counts["request_date"] = pd.to_datetime(
+        daily_counts["request_date"]
+    )
+    daily_counts["request_date"] = pd.to_datetime(
+    daily_counts["request_date"]
+)
+
+    today = pd.Timestamp.now().normalize()
+
+    daily_counts = daily_counts[
+        daily_counts["request_date"] < today
+    ].copy()
+    daily_counts["request_count"] = pd.to_numeric(
+        daily_counts["request_count"]
+    )
+
+    return daily_counts
 def prepare_data(requests_df):
     """Clean dates and calculate resolution time."""
     cleaned = requests_df.copy()
