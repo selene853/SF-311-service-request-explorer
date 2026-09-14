@@ -125,6 +125,14 @@ def summarize_data(df):
 
 def cohort_metrics(df):
     closed_count = df["resolution_hours"].notna().sum()
+    category_stats = (
+        df.groupby("service_name")["resolution_hours"]
+        .agg(["count", "median"])
+        .query("count >= 10")
+    )
+
+    top_category = category_stats["median"].idxmax()
+    
     
     
     return {
@@ -133,6 +141,7 @@ def cohort_metrics(df):
         "closed_percentage": closed_count / len(df) * 100,
         "median_resolution_hours": df["resolution_hours"].median(),
         "mean_resolution_hours": df["resolution_hours"].mean(),
+        'top 1 category by median':top_category
         
     }
     
@@ -172,6 +181,7 @@ def main():
 
 
 if __name__ == "__main__":
+
 
     main()
 
