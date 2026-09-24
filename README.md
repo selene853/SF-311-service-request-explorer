@@ -1,5 +1,12 @@
 # SF-311-service-request-explorer
 Explore patterns in San Francisco 311 service requests
+# SF 311 Service Request Explorer(improved)
+
+An interactive Streamlit dashboard for exploring current San Francisco 311 service-request data.
+
+## Live Dashboard
+
+[Open the SF 311 Service Request Explorer](https://sf-311-service-request-explorer-97yf65yvazdgtubzw5vae7.streamlit.app)
 ## Research Questions
 1. What are the most common request categories?
 2. How does the request volume change over time?
@@ -92,3 +99,5 @@ This visualization shows the daily number of SF 311 requests during the previous
 ### Data Freshness
 
 The project retrieves data from the live SF Open Data API. Therefore, summaries and visualizations may change when the program is run at a different time. The analysis method remains consistent even as new requests are submitted and existing requests are closed.
+## Week 4 interactive dashboard on Streamlit
+This week, inspired by the website data updates and the openess of website at any time, I develop an interactive dashboard for users where they can explore SF-311-service requests by setting time scope and minimum closed cases to get visualizations. I also keep my research method as a default version. For example, keeping the sampling strategy of 30 days setback.
