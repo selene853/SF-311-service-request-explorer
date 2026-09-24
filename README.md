@@ -5,10 +5,10 @@ Explore patterns in San Francisco 311 service requests
 2. How does the request volume change over time?
 3. How does the median resolution time differ by category?
 ## Project Scope
-The first version will analyze closed service requests from the most recent 12 months
+The current version analyzes a sample of 1,000 recent SF 311 requests submitted before a 30-day cutoff. This delay reduces bias caused by requests that are still open. Resolution-time analysis uses closed requests only. The project also analyzes daily request volume over the most recent 90 completed days, excluding the incomplete current day.
 ## Planned Visualization
 - Top 10 request categories
-- Monthly request volume
+- Daily request volume over the most recent 90 completed days
 - Median resolution time by category
 ## Data Source
 San Francisco 311 Cases:
